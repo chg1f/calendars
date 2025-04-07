@@ -1,0 +1,23 @@
+name: Export
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * *"
+jobs:
+  build:
+    name: Generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+      - run: |
+          uv run main.py data/icloud_holidays_cn_zh --urls https://calendars.icloud.com/holidays/cn_zh.ics
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          name: events
+          path: data/
